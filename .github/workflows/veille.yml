@@ -1,0 +1,38 @@
+name: veille-cocorico
+
+on:
+  schedule:
+    # Toutes les 5 min, uniquement les 10 et 11 juillet (heure UTC).
+    # 11/07 18:00 UTC = 20:00 Paris = fin de fenetre (garde-fou aussi dans check.py).
+    - cron: "*/5 * 10,11 7 *"
+  workflow_dispatch: {}   # bouton "Run workflow" pour tester a la demande
+
+permissions:
+  contents: write         # pour committer state.json (dedup)
+
+concurrency:
+  group: veille-cocorico
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Poller
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python3 check.py
+
+      - name: Commit state si change
+        run: |
+          if [ -n "$(git status --porcelain state.json)" ]; then
+            git config user.name "veille-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add state.json
+            git commit -m "state: maj veille [skip ci]"
+            git push
+          else
+            echo "state inchange"
+          fi
