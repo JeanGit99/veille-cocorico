@@ -32,6 +32,8 @@ UA = "Mozilla/5.0 (VeilleCocorico; GitHubActions; +https://ntfy.sh)"
 DEADLINE_UTC = datetime.datetime(2026, 7, 11, 18, 0, 0, tzinfo=datetime.timezone.utc)
 # Fenetre de recence des articles (heures)
 RECENCY_H = 18
+# Affichage des heures en HEURE DE PARIS (CEST = UTC+2 l'ete ; le projet ne tourne qu'en juillet).
+PARIS_TZ = datetime.timezone(datetime.timedelta(hours=2))
 
 NEWS = "https://news.google.com/rss/search?q={q}&hl=fr&gl=FR&ceid=FR:fr"
 FEST_Q = '"Cocorico Electro"'
@@ -54,6 +56,11 @@ DECISION_PATTERNS = [
 ]
 DECISION_RE = re.compile("|".join(DECISION_PATTERNS))
 DECISION_SUBSET = re.compile(r"\bannul\w*|\breporte\w*|\binterdi\w*|\bmaintenu\w*|\bmaintien\b|\bsuspend\w*")
+
+
+def paris_now():
+    """Heure actuelle a Paris (pour l'affichage)."""
+    return datetime.datetime.now(PARIS_TZ)
 
 
 def strip_accents(s):
@@ -113,7 +120,8 @@ def ntfy(topic, body, title=None, priority=None, tags=None):
 
 
 def alert(summary, url):
-    body = summary + (f"\nSource: {url}" if url else "")
+    ts = paris_now().strftime("%H:%M")
+    body = summary + (f"\nSource: {url}" if url else "") + f"\n(detecte a {ts}, heure de Paris)"
     ntfy(TOPIC, body, title="COCORICO - DECISION", priority="urgent", tags="rotating_light,rooster")
 
 
@@ -188,6 +196,7 @@ def consider_pref(it):
 
 def main():
     now = datetime.datetime.now(datetime.timezone.utc)
+    now_p = now.astimezone(PARIS_TZ)  # meme instant, affiche en heure de Paris
     st = load_state()
     seen = set(st.get("seen_links", []))
     site_base = set(st.get("site_terms", []))
@@ -195,7 +204,7 @@ def main():
 
     # Fenetre terminee
     if now > DEADLINE_UTC and not SEED:
-        ntfy(HB_TOPIC, f"HB fenetre terminee {now.strftime('%Y-%m-%d %H:%MZ')}",
+        ntfy(HB_TOPIC, f"HB fenetre terminee {now_p.strftime('%Y-%m-%d %H:%M')} (Paris)",
              priority="min", tags="checkered_flag")
         print("Fenetre terminee - aucune alerte.")
         return
@@ -252,7 +261,7 @@ def main():
         print(f"[BASELINE] etablie. termes_site={st['site_terms']} liens_vus={len(st['seen_links'])} "
               f"candidats_ignores={len(candidates)}")
         if not SEED:
-            ntfy(HB_TOPIC, f"HB baseline {now.strftime('%H:%MZ')}", priority="min", tags="seedling")
+            ntfy(HB_TOPIC, f"HB baseline {now_p.strftime('%H:%M')} (Paris)", priority="min", tags="seedling")
         return
 
     # ---- Fonctionnement normal : alerter sur le nouveau
@@ -283,8 +292,8 @@ def main():
     save_state(st)
 
     status = "ALERTE" if sent else "RAS"
-    ntfy(HB_TOPIC, f"HB {status} {now.strftime('%Y-%m-%d %H:%MZ')}", priority="min", tags="hourglass")
-    print(f"{status} - {sent} alerte(s) - {now.isoformat()}")
+    ntfy(HB_TOPIC, f"HB {status} {now_p.strftime('%Y-%m-%d %H:%M')} (Paris)", priority="min", tags="hourglass")
+    print(f"{status} - {sent} alerte(s) - {now_p.isoformat()} (Paris)")
 
 
 if __name__ == "__main__":

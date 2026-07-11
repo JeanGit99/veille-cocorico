@@ -2,9 +2,10 @@ name: veille-cocorico
 
 on:
   schedule:
-    # Toutes les 5 min, uniquement les 10 et 11 juillet (heure UTC).
-    # 11/07 18:00 UTC = 20:00 Paris = fin de fenetre (garde-fou aussi dans check.py).
-    - cron: "*/5 * 10,11 7 *"
+    # NB: le planificateur natif de GitHub ne se declenche pas ici (compte neuf).
+    # La cadence REELLE est pilotee par cron-job.org (appel API workflow_dispatch).
+    # Ce cron reste en secours : toutes les 10 min, les 10-11 juillet (UTC).
+    - cron: "*/10 * 10,11 7 *"
   workflow_dispatch: {}   # bouton "Run workflow" pour tester a la demande
 
 permissions:
