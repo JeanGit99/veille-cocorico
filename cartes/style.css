@@ -165,12 +165,19 @@ main { max-width: 1180px; margin: 0 auto; padding: 24px 16px 64px; }
 }
 .card-art {
   position: relative; flex: 1 1 auto; min-height: 0; border-radius: 2.5cqw; display: grid; place-items: center; overflow: hidden;
-  background:
+  background: var(--art-bg,
     radial-gradient(circle at 50% 45%, hsl(var(--art-hue) 80% 75% / .9), transparent 60%),
-    repeating-conic-gradient(from 0deg at 50% 50%, hsl(var(--art-hue) 60% 40%) 0 10deg, hsl(var(--art-hue) 55% 32%) 10deg 20deg);
+    repeating-conic-gradient(from 0deg at 50% 50%, hsl(var(--art-hue) 60% 40%) 0 10deg, hsl(var(--art-hue) 55% 32%) 10deg 20deg));
   box-shadow: inset 0 0 0 0.8cqw color-mix(in srgb, var(--rc) 80%, black), inset 0 0 6cqw rgb(0 0 0 / .4);
 }
 .card-emoji { font-size: 30cqw; line-height: 1; filter: drop-shadow(0 2cqw 2cqw rgb(0 0 0 / .45)); transform: translateZ(30px); }
+.card-svg { width: 92%; height: 92%; filter: drop-shadow(0 1.5cqw 1.5cqw rgb(0 0 0 / .35)); }
+.card-mark {
+  position: absolute; top: 2cqw; left: 2cqw; display: grid; place-items: center;
+  width: 13cqw; height: 13cqw; border-radius: 50%; font-size: 8.5cqw;
+  background: rgb(255 255 255 / .85); box-shadow: 0 1px 4px rgb(0 0 0 / .3);
+}
+.locked-emoji .card-svg { width: 60cqw; height: 60cqw; filter: none; }
 .card-type {
   font-size: 4.2cqw; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; text-align: center;
   padding: 1cqw 2cqw; border-radius: 99px; background: color-mix(in srgb, var(--rc) 25%, white); color: color-mix(in srgb, var(--rc) 50%, black);

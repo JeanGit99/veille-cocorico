@@ -22,13 +22,13 @@ Ouvrir `index.html` dans un navigateur suffit. La progression est sauvegardée d
 
 | Thème | Cartes | Idée |
 |---|---|---|
+| **Fromages AOP** (par défaut) | 34 | Du Comté à la Rigotte de Condrieu, illustrés en SVG ; rareté calquée sur les volumes de production |
 | Bestiaire de France | 25 | Créatures du folklore régional : Tarasque, Vouivre, Ankou, Mélusine… |
 | Océans & Abysses | 20 | Des récifs aux abysses, jusqu'à l'Atlantide |
 | Cosmos | 20 | Planètes, étoiles, phénomènes célestes |
 
 ## Autres idées de thèmes
 
-- **Fromages & terroirs** : une carte par AOP, rareté selon la production.
 - **Monuments & châteaux de France**, avec les châteaux de la Loire en série spéciale.
 - **Festival électro** : instruments, styles musicaux, scènes, objets du festivalier.
 - **Minéraux & pierres précieuses** : le shiny colle naturellement au thème.
@@ -48,5 +48,9 @@ monTheme: {
   cards: [{ name: "…", emoji: "🎴", rarity: "C", type: "…", desc: "…" }, …],
 },
 ```
+
+Options : `render(card)` pour dessiner l'illustration soi-même (voir `fromages.js`, qui dessine
+chaque fromage selon sa forme, sa croûte et sa pâte), `artBg` pour le fond des illustrations,
+`rarityNote` pour expliquer la logique de rareté, et `mark` sur une carte pour un petit pictogramme.
 
 Les taux de tirage, prix et règles se règlent en haut de `app.js`.

@@ -99,6 +99,8 @@
     state = Object.assign(freshState(), storage.get("cartes:state:" + key, {}));
     document.documentElement.style.setProperty("--accent", theme.accent);
     document.documentElement.style.setProperty("--theme-hue", theme.hue);
+    if (theme.artBg) document.documentElement.style.setProperty("--art-bg", theme.artBg);
+    else document.documentElement.style.removeProperty("--art-bg");
     $("#brandIcon").textContent = theme.icon;
     $("#themeName").textContent = theme.name;
     $("#themeTagline").textContent = theme.tagline;
@@ -110,6 +112,9 @@
   const own = (idx) => state.owned[idx] || { n: 0, s: 0 };
 
   // ---------- Rendu d'une carte ----------
+  // Un thème peut fournir sa propre illustration (SVG) ; sinon on affiche l'emoji.
+  const artHtml = (card) => theme.render ? theme.render(card) : `<span class="card-emoji">${card.emoji}</span>`;
+
   function cardEl(card, { shiny = false, isNew = false, count = null } = {}) {
     const r = RARITIES[card.rarity];
     const node = el("div", `card r-${card.rarity}${shiny ? " shiny" : ""}`);
@@ -123,7 +128,7 @@
             <span class="card-name">${esc(card.name)}</span>
             <span class="card-power">${card.power}</span>
           </div>
-          <div class="card-art"><span class="card-emoji">${card.emoji}</span></div>
+          <div class="card-art">${artHtml(card)}${card.mark ? `<span class="card-mark">${card.mark}</span>` : ""}</div>
           <div class="card-type">${esc(card.type)}</div>
           <p class="card-desc">${esc(card.desc)}</p>
           <div class="card-foot">
@@ -144,7 +149,7 @@
     const node = el("div", "card locked");
     node.dataset.idx = card.idx;
     node.innerHTML = `<div class="card-inner"><div class="locked-face">
-      <span class="locked-emoji">${card.emoji}</span>
+      <span class="locked-emoji">${theme.render ? theme.render(card) : card.emoji}</span>
       <span class="locked-num">${pad(card.num)}</span>
       <span class="gems" style="color:${RARITIES[card.rarity].color}">${"◆".repeat(RARITIES[card.rarity].gems)}</span>
     </div></div>`;
@@ -230,6 +235,7 @@
         <td>${n} cartes</td><td>${pct.toLocaleString("fr-FR", { maximumFractionDigits: 1 })} % par carte</td></tr>`;
     });
     $("#oddsTable").innerHTML = `<table>${rows.join("")}</table>
+      ${theme.rarityNote ? `<p class="muted">${esc(theme.rarityNote)}</p>` : ""}
       <p class="muted">Dernière carte de chaque booster : peu commune ou mieux garantie.
       Chance de shiny : 1 sur 15 par carte (1 sur 4 dans le Booster Éclat, avec 1 shiny garanti).</p>`;
   }
