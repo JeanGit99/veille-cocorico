@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collection de cartes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;800&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon" id="brandIcon">📜</span>
+      <div>
+        <h1 id="themeName">Collection</h1>
+        <p id="themeTagline"></p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="shop" role="tab">Boosters</button>
+      <button class="tab" data-view="album" role="tab">Collection</button>
+      <button class="tab" data-view="settings" role="tab">Réglages</button>
+    </nav>
+    <div class="wallet" title="Pièces">
+      <span class="coin">◎</span><span id="coins">0</span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Boutique de boosters -->
+    <section class="view active" id="view-shop">
+      <div class="progress-strip">
+        <div class="progress-item">
+          <span>Collection</span>
+          <div class="bar"><i id="barNormal"></i></div>
+          <b id="progNormal">0/0</b>
+        </div>
+        <div class="progress-item shiny-text">
+          <span>✦ Shiny</span>
+          <div class="bar shiny-bar"><i id="barShiny"></i></div>
+          <b id="progShiny">0/0</b>
+        </div>
+      </div>
+
+      <div class="packs" id="packs"></div>
+
+      <details class="odds">
+        <summary>Taux d'obtention</summary>
+        <div id="oddsTable"></div>
+      </details>
+    </section>
+
+    <!-- Album -->
+    <section class="view" id="view-album">
+      <div class="filters">
+        <input type="search" id="search" placeholder="Rechercher une carte…">
+        <select id="filterRarity">
+          <option value="">Toutes raretés</option>
+        </select>
+        <select id="filterOwned">
+          <option value="">Toutes</option>
+          <option value="owned">Possédées</option>
+          <option value="missing">Manquantes</option>
+          <option value="shiny">Shiny possédées</option>
+          <option value="dupes">Doublons</option>
+        </select>
+        <button class="btn ghost" id="sellAll">Vendre tous les doublons</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- Réglages -->
+    <section class="view" id="view-settings">
+      <div class="panel">
+        <h2>Thème de la collection</h2>
+        <p class="muted">Chaque thème a sa propre progression, sauvegardée dans ce navigateur.</p>
+        <div class="theme-list" id="themeList"></div>
+      </div>
+      <div class="panel">
+        <h2>Statistiques</h2>
+        <dl class="stats" id="stats"></dl>
+      </div>
+      <div class="panel danger">
+        <h2>Réinitialiser</h2>
+        <p class="muted">Efface la collection et les pièces du thème actuel.</p>
+        <button class="btn danger" id="reset">Tout effacer</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Ouverture de booster -->
+  <div class="overlay" id="opening" hidden>
+    <div class="stage" id="stage"></div>
+    <div class="opening-actions">
+      <button class="btn ghost" id="revealAll">Tout révéler</button>
+      <button class="btn primary" id="collect" hidden>Ajouter à la collection</button>
+    </div>
+  </div>
+
+  <!-- Détail d'une carte -->
+  <div class="overlay" id="detail" hidden>
+    <div class="detail-box">
+      <button class="close" id="detailClose" aria-label="Fermer">×</button>
+      <div class="detail-card" id="detailCard"></div>
+      <div class="detail-info" id="detailInfo"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="themes.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
